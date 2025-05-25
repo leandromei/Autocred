@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Autocred{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-logo">
+                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Autocred" height="32">
+            </div>
+            
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="header-actions">
+                <button class="theme-toggle" aria-label="Alternar tema">
+                    <i class="fas fa-moon" id="theme-toggle-icon"></i>
+                </button>
+                
+                <div class="user-menu">
+                    <button class="user-menu-toggle">
+                        <img src="{{ url_for('static', path='/img/avatar.jpg') }}" alt="Avatar do usuário">
+                        <span>{{ current_user.full_name }}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    
+                    <ul class="user-menu-dropdown">
+                        <li><a href="/perfil"><i class="fas fa-user"></i> Meu Perfil</a></li>
+                        <li><a href="/configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
+                        <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="/dashboard" class="sidebar-nav-item {% if request.path == '/dashboard' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="/contatos" class="sidebar-nav-item {% if request.path == '/contatos' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-address-book"></i>
+                        <span>Base de Contatos</span>
+                    </a>
+                    
+                    <a href="/simulacao" class="sidebar-nav-item {% if request.path == '/simulacao' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-calculator"></i>
+                        <span>Simulação</span>
+                    </a>
+                    
+                    <a href="/propostas" class="sidebar-nav-item {% if request.path == '/propostas' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-file-contract"></i>
+                        <span>Propostas</span>
+                    </a>
+                    
+                    <a href="/prospeccao" class="sidebar-nav-item {% if request.path == '/prospeccao' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-bullhorn"></i>
+                        <span>Prospecção</span>
+                    </a>
+                    
+                    <a href="/contratos" class="sidebar-nav-item {% if request.path == '/contratos' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-file-signature"></i>
+                        <span>Contratos</span>
+                    </a>
+                    
+                    <a href="/comissoes" class="sidebar-nav-item {% if request.path == '/comissoes' %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-money-bill-wave"></i>
+                        <span>Comissões</span>
+                    </a>
+                    
+                    {% if current_user.is_superuser %}
+                    <a href="/admin" class="sidebar-nav-item {% if '/admin' in request.path %}active{% endif %}">
+                        <i class="sidebar-nav-icon fas fa-cogs"></i>
+                        <span>Admin</span>
+                    </a>
+                    {% endif %}
+                </nav>
+            </aside>
+            
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Autocred. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <div id="toast-container"></div>
+    
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

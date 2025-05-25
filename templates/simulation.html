@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocred - Simulação de Propostas</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Estilos específicos para a página de simulação */
+        .simulation-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark-mode .simulation-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .form-control:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .btn-primary {
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .btn-primary {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: #0d47a1;
+        }
+        
+        .results-container {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .dark-mode .results-title {
+            color: #e0e0e0;
+            border-bottom-color: #444;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .dark-mode .results-table th, .dark-mode .results-table td {
+            border-bottom: 1px solid #444;
+        }
+        
+        .results-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .results-table th {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .results-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .dark-mode .results-table tr:hover {
+            background-color: #2c2c2c;
+        }
+        
+        .btn-save {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+        
+        .dark-mode .btn-save {
+            background-color: #2e7d32;
+        }
+        
+        .dark-mode .btn-save:hover {
+            background-color: #1b5e20;
+        }
+        
+        .btn-print {
+            padding: 10px 15px;
+            background-color: #9e9e9e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-print:hover {
+            background-color: #757575;
+        }
+        
+        .dark-mode .btn-print {
+            background-color: #616161;
+        }
+        
+        .dark-mode .btn-print:hover {
+            background-color: #424242;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        .dark-mode .loading-spinner {
+            border: 4px solid #333;
+            border-top: 4px solid #3498db;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-col {
+                width: 100%;
+            }
+            
+            .results-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Autocred - Sistema de Gestão de Leads</h1>
+        <div class="user-info">
+            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
+            <span class="user-name">Olá, {{ user.full_name }}</span>
+            <a href="/logout" class="logout-btn">Sair</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="page-title">Simulação de Propostas</h2>
+        
+        <div class="simulation-container">
+            <form id="simulation-form">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="client-name">Nome do Cliente</label>
+                            <input type="text" id="client-name" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="client-cpf">CPF</label>
+                            <input type="text" id="client-cpf" class="form-control" placeholder="000.000.000-00" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="loan-type">Tipo de Empréstimo</label>
+                            <select id="loan-type" class="form-control" required>
+                                <option value="">Selecione...</option>
+                                <option value="personal">Empréstimo Pessoal</option>
+                                <option value="vehicle">Financiamento de Veículo</option>
+                                <option value="home">Financiamento Imobiliário</option>
+                                <option value="business">Empréstimo para Negócios</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="loan-amount">Valor Solicitado (R$)</label>
+                            <input type="number" id="loan-amount" class="form-control" min="1000" step="100" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="loan-term">Prazo (meses)</label>
+                            <select id="loan-term" class="form-control" required>
+                                <option value="">Selecione...</option>
+                                <option value="12">12 meses</option>
+                                <option value="24">24 meses</option>
+                                <option value="36">36 meses</option>
+                                <option value="48">48 meses</option>
+                                <option value="60">60 meses</option>
+                                <option value="72">72 meses</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="income">Renda Mensal (R$)</label>
+                            <input type="number" id="income" class="form-control" min="0" step="100" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additional-info">Informações Adicionais</label>
+                    <textarea id="additional-info" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary">Simular Proposta</button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Calculando simulação...</p>
+            </div>
+            
+            <div class="results-container" id="results-container">
+                <h3 class="results-title">Resultados da Simulação</h3>
+                
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Instituição</th>
+                            <th>Taxa de Juros</th>
+                            <th>Valor da Parcela</th>
+                            <th>Total a Pagar</th>
+                            <th>CET</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Resultados serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div class="buttons-container">
+                    <button class="btn-save" id="save-proposal">Salvar Proposta</button>
+                    <button class="btn-print" id="print-proposal">Imprimir Simulação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tema
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Configurar botão de alternar tema
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const isDarkMode = document.body.classList.toggle('dark-mode');
+                    localStorage.setItem('darkMode', isDarkMode);
+                });
+            }
+            
+            // Configurar formulário de simulação
+            const simulationForm = document.getElementById('simulation-form');
+            const loadingElement = document.getElementById('loading');
+            const resultsContainer = document.getElementById('results-container');
+            const resultsBody = document.getElementById('results-body');
+            const saveProposalBtn = document.getElementById('save-proposal');
+            const printProposalBtn = document.getElementById('print-proposal');
+            
+            // Máscara para CPF
+            const cpfInput = document.getElementById('client-cpf');
+            cpfInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) {
+                    value = value.slice(0, 11);
+                }
+                
+                if (value.length > 9) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                } else if (value.length > 6) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                } else if (value.length > 3) {
+                    value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Enviar formulário
+            simulationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mostrar loading
+                loadingElement.style.display = 'block';
+                resultsContainer.style.display = 'none';
+                
+                // Coletar dados do formulário
+                const simulationData = {
+                    clientName: document.getElementById('client-name').value,
+                    clientCpf: document.getElementById('client-cpf').value,
+                    loanType: document.getElementById('loan-type').value,
+                    loanAmount: document.getElementById('loan-amount').value,
+                    loanTerm: document.getElementById('loan-term').value,
+                    income: document.getElementById('income').value,
+                    additionalInfo: document.getElementById('additional-info').value
+                };
+                
+                // Em produção, enviar dados para API
+                // Exemplo: 
+                // fetch('/api/simulations', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(simulationData)
+                // }).then(response => response.json())
+                //   .then(data => displayResults(data))
+                
+                // Simulação para demonstração
+                setTimeout(function() {
+                    // Esconder loading
+                    loadingElement.style.display = 'none';
+                    
+                    // Dados simulados
+                    const simulatedResults = [
+                        {
+                            institution: 'Banco A',
+                            interestRate: '1,99% a.m.',
+                            installmentValue: formatCurrency(calculateInstallment(simulationData.loanAmount, 0.0199, simulationData.loanTerm)),
+                            totalAmount: formatCurrency(calculateInstallment(simulationData.loanAmount, 0.0199, simulationData.loanTerm) * simulationData.loanTerm),
+                            cet: '26,8% a.a.'
+                        },
+                        {
+                            institution: 'Banco B',
+                            interestRate: '2,15% a.m.',
+                            installmentValue: formatCurrency(calculateInstallment(simulationData.loanAmount, 0.0215, simulationData.loanTerm)),
+                            totalAmount: formatCurrency(calculateInstallment(simulationData.loanAmount, 0.0215, simulationData.loanTerm) * simulationData.loanTerm),
+                            cet: '29,2% a.a.'
+                        },
+                        {
+                            institution: 'Banco C',
+                            interestRate: '1,85% a.m.',
+                            installmentValue: formatCurrency(calculateInstallment(simulationData.loanAmount, 0.0185, simulationData.loanTerm)),
+                            totalAmount: formatCurrency(calculateInstallment(simulationData.loanAmount, 0.0185, simulationData.loanTerm) * simulationData.loanTerm),
+                            cet: '24,5% a.a.'
+                        }
+                    ];
+                    
+                    displayResults(simulatedResults);
+                }, 1500);
+            });
+            
+            // Função para calcular valor da parcela (simplificada)
+            function calculateInstallment(amount, rate, term) {
+                amount = parseFloat(amount);
+                term = parseInt(term);
+                
+                // Fórmula simplificada: PMT = PV * (r * (1 + r)^n) / ((1 + r)^n - 1)
+                const pv = amount;
+                const r = rate;
+                const n = term;
+                
+                const installment = pv * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                return installment;
+            }
+            
+            // Função para formatar valor em moeda
+            function formatCurrency(value) {
+                return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+            
+            // Exibir resultados
+            function displayResults(results) {
+                // Limpar resultados anteriores
+                resultsBody.innerHTML = '';
+                
+                // Adicionar novos resultados
+                results.forEach(result => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${result.institution}</td>
+                        <td>${result.interestRate}</td>
+                        <td>${result.installmentValue}</td>
+                        <td>${result.totalAmount}</td>
+                        <td>${result.cet}</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+                
+                // Mostrar container de resultados
+                resultsContainer.style.display = 'block';
+            }
+            
+            // Salvar proposta
+            saveProposalBtn.addEventListener('click', function() {
+                // Em produção, enviar requisição para salvar proposta
+                // Exemplo: fetch('/api/proposals', { method: 'POST', ... })
+                
+                // Simulação para demonstração
+                alert('Proposta salva com sucesso!');
+            });
+            
+            // Imprimir simulação
+            printProposalBtn.addEventListener('click', function() {
+                window.print();
+            });
+        });
+    </script>
+</body>
+</html>

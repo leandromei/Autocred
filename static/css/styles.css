@@ -1,0 +1,410 @@
+/* Estilos básicos para o sistema Autocred */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.header {
+    background-color: #2196F3;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 30px; /* Adicionado para consistência */
+}
+
+body.dark-mode .header {
+    background-color: #1565c0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-name {
+    margin-right: 15px;
+}
+
+.logout-btn {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255,255,255,0.3);
+}
+
+.theme-toggle {
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Botões Padronizados --- */
+.btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: #3498db; /* Azul padrão */
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    color: white;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn:hover {
+    filter: brightness(90%);
+    text-decoration: none;
+}
+
+.btn:active {
+    filter: brightness(80%);
+}
+
+.btn:disabled, .btn.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.btn-warning {
+    background-color: #f39c12;
+    border-color: #f39c12;
+    color: #fff;
+}
+
+.btn-info {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+body.dark-mode .btn {
+    /* Ajustar cores dos botões no dark mode se necessário */
+}
+
+/* --- Mensagens de Feedback Padronizadas --- */
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+body.dark-mode .alert-success {
+    color: #a3cfbb;
+    background-color: #1d3c2a;
+    border-color: #2a573a;
+}
+
+body.dark-mode .alert-danger {
+    color: #f1b0b7;
+    background-color: #491f24;
+    border-color: #6b2d34;
+}
+
+body.dark-mode .alert-warning {
+    color: #f9e4a0;
+    background-color: #534413;
+    border-color: #7a671c;
+}
+
+body.dark-mode .alert-info {
+    color: #a9d5e0;
+    background-color: #1c404a;
+    border-color: #2a5f6d;
+}
+
+/* --- Indicador de Loading --- */
+.loading-indicator {
+    display: none; /* Oculto por padrão */
+    position: fixed; /* Ou absolute, dependendo do contexto */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+}
+
+body.dark-mode .loading-indicator {
+    border: 4px solid #444;
+    border-top: 4px solid #5dade2;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* --- Estilos para formulários --- */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+body.dark-mode label {
+    color: #bbb;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-sizing: border-box;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="number"],
+body.dark-mode select,
+body.dark-mode textarea {
+    color: #e0e0e0;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus,
+body.dark-mode textarea:focus {
+    border-color: #5dade2;
+    box-shadow: 0 0 0 0.2rem rgba(93, 173, 226, 0.25);
+}
+
+/* --- Estilos para tabelas --- */
+table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+table.data-table th,
+table.data-table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    text-align: left;
+}
+
+body.dark-mode table.data-table th,
+body.dark-mode table.data-table td {
+    border-top: 1px solid #444;
+}
+
+table.data-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+body.dark-mode table.data-table thead th {
+    border-bottom: 2px solid #555;
+    background-color: #2a2a2a;
+}
+
+table.data-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode table.data-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+table.data-table tbody tr.selected {
+    background-color: rgba(52, 152, 219, 0.2);
+}
+
+body.dark-mode table.data-table tbody tr.selected {
+    background-color: rgba(93, 173, 226, 0.2);
+}
+
+/* --- Estilos para login --- */
+.login-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    margin: 100px auto;
+}
+
+body.dark-mode .login-container {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo h1 {
+    color: #2c3e50;
+    margin: 0;
+}
+
+body.dark-mode .logo h1 {
+    color: #e0e0e0;
+}
+
+/* Estilos para mensagens de erro no login (usando .alert) */
+.login-container .alert-danger {
+    margin-top: 20px;
+}
+
+/* --- Estilos responsivos --- */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .user-info {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .nav-menu ul {
+        flex-direction: column;
+    }
+    .nav-menu li {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+

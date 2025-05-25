@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "email": "admin@autocred.com",
+      "password": "admin123",
+      "full_name": "Administrador",
+      "is_active": true,
+      "is_superuser": true
+    }
+  ]
+}

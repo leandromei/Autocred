@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocred - Prospecção</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Estilos específicos para a página de prospecção */
+        .prospecting-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark-mode .prospecting-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .tabs-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .dark-mode .tabs {
+            border-bottom-color: #444;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .dark-mode .tab {
+            color: #aaa;
+        }
+        
+        .tab:hover {
+            color: #2196F3;
+        }
+        
+        .tab.active {
+            color: #2196F3;
+            border-bottom-color: #2196F3;
+        }
+        
+        .dark-mode .tab:hover {
+            color: #64b5f6;
+        }
+        
+        .dark-mode .tab.active {
+            color: #64b5f6;
+            border-bottom-color: #64b5f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        
+        .dark-mode .search-input {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .search-input:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+        
+        .search-button {
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .search-button {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .search-button:hover {
+            background-color: #0d47a1;
+        }
+        
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .leads-table th, .leads-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .dark-mode .leads-table th, .dark-mode .leads-table td {
+            border-bottom: 1px solid #444;
+        }
+        
+        .leads-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .leads-table th {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .leads-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .dark-mode .leads-table tr:hover {
+            background-color: #2c2c2c;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-novo {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .dark-mode .status-novo {
+            background-color: #0d47a1;
+            color: #e3f2fd;
+        }
+        
+        .status-contato {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .dark-mode .status-contato {
+            background-color: #1b5e20;
+            color: #e8f5e9;
+        }
+        
+        .status-qualificado {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .dark-mode .status-qualificado {
+            background-color: #ff6f00;
+            color: #fff8e1;
+        }
+        
+        .status-proposta {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .dark-mode .status-proposta {
+            background-color: #4a148c;
+            color: #f3e5f5;
+        }
+        
+        .status-fechado {
+            background-color: #e0f2f1;
+            color: #00695c;
+        }
+        
+        .dark-mode .status-fechado {
+            background-color: #004d40;
+            color: #e0f2f1;
+        }
+        
+        .status-perdido {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .dark-mode .status-perdido {
+            background-color: #b71c1c;
+            color: #ffebee;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .contact-button {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .contact-button:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .contact-button {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .contact-button:hover {
+            background-color: #0d47a1;
+        }
+        
+        .qualify-button {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .qualify-button:hover {
+            background-color: #e68900;
+        }
+        
+        .dark-mode .qualify-button {
+            background-color: #ef6c00;
+        }
+        
+        .dark-mode .qualify-button:hover {
+            background-color: #e65100;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination-button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .pagination-button:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pagination-button.active {
+            background-color: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        .dark-mode .pagination-button {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .dark-mode .pagination-button:hover {
+            background-color: #444;
+        }
+        
+        .dark-mode .pagination-button.active {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+        
+        /* Formulário de contato */
+        .contact-form-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .dark-mode .contact-form-container {
+            background-color: #2c2c2c;
+            border-color: #444;
+        }
+        
+        .form-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .dark-mode .form-title {
+            color: #e0e0e0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .form-control:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .btn-primary {
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .btn-primary {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: #0d47a1;
+        }
+        
+        /* Modal para qualificar lead */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-button:hover {
+            color: #555;
+        }
+        
+        .dark-mode .close-button {
+            color: #ccc;
+        }
+        
+        .dark-mode .close-button:hover {
+            color: #fff;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .leads-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-col {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Autocred - Sistema de Gestão de Leads</h1>
+        <div class="user-info">
+            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
+            <span class="user-name">Olá, {{ user.full_name }}</span>
+            <a href="/logout" class="logout-btn">Sair</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="page-title">Prospecção</h2>
+        
+        <div class="prospecting-container">
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="new-leads">Novos Leads</div>
+                    <div class="tab" data-tab="contacted">Em Contato</div>
+                    <div class="tab" data-tab="qualified">Qualificados</div>
+                    <div class="tab" data-tab="all-leads">Todos</div>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" id="search-input" placeholder="Buscar por nome, email ou telefone...">
+                    <button class="search-button" id="search-btn">Buscar</button>
+                </div>
+                
+                <!-- Tab: Novos Leads -->
+                <div class="tab-content active" id="new-leads-content">
+                    <div class="table-responsive">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Origem</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lead in new_leads %}
+                                <tr>
+                                    <td>{{ lead.name }}</td>
+                                    <td>{{ lead.email }}</td>
+                                    <td>{{ lead.phone }}</td>
+                                    <td>{{ lead.source }}</td>
+                                    <td>{{ lead.created_at }}</td>
+                                    <td><span class="status-badge status-{{ lead.status }}">{{ lead.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button contact-button" data-id="{{ lead.id }}">Contatar</button>
+                                            <button class="action-button qualify-button" data-id="{{ lead.id }}">Qualificar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not new_leads %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">Nenhum lead novo encontrado.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-new">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-new">Próximo</button>
+                    </div>
+                </div>
+                
+                <!-- Tab: Em Contato -->
+                <div class="tab-content" id="contacted-content">
+                    <div class="table-responsive">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Origem</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lead in contacted_leads %}
+                                <tr>
+                                    <td>{{ lead.name }}</td>
+                                    <td>{{ lead.email }}</td>
+                                    <td>{{ lead.phone }}</td>
+                                    <td>{{ lead.source }}</td>
+                                    <td>{{ lead.created_at }}</td>
+                                    <td><span class="status-badge status-{{ lead.status }}">{{ lead.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button contact-button" data-id="{{ lead.id }}">Contatar</button>
+                                            <button class="action-button qualify-button" data-id="{{ lead.id }}">Qualificar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not contacted_leads %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">Nenhum lead em contato encontrado.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-contacted">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-contacted">Próximo</button>
+                    </div>
+                </div>
+                
+                <!-- Tab: Qualificados -->
+                <div class="tab-content" id="qualified-content">
+                    <div class="table-responsive">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Origem</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lead in qualified_leads %}
+                                <tr>
+                                    <td>{{ lead.name }}</td>
+                                    <td>{{ lead.email }}</td>
+                                    <td>{{ lead.phone }}</td>
+                                    <td>{{ lead.source }}</td>
+                                    <td>{{ lead.created_at }}</td>
+                                    <td><span class="status-badge status-{{ lead.status }}">{{ lead.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button contact-button" data-id="{{ lead.id }}">Contatar</button>
+                                            <button class="action-button qualify-button" data-id="{{ lead.id }}">Editar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not qualified_leads %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">Nenhum lead qualificado encontrado.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-qualified">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-qualified">Próximo</button>
+                    </div>
+                </div>
+                
+                <!-- Tab: Todos -->
+                <div class="tab-content" id="all-leads-content">
+                    <div class="table-responsive">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Origem</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lead in all_leads %}
+                                <tr>
+                                    <td>{{ lead.name }}</td>
+                                    <td>{{ lead.email }}</td>
+                                    <td>{{ lead.phone }}</td>
+                                    <td>{{ lead.source }}</td>
+                                    <td>{{ lead.created_at }}</td>
+                                    <td><span class="status-badge status-{{ lead.status }}">{{ lead.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button contact-button" data-id="{{ lead.id }}">Contatar</button>
+                                            <button class="action-button qualify-button" data-id="{{ lead.id }}">Qualificar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not all_leads %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">Nenhum lead encontrado.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-all">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-all">Próximo</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulário de contato -->
+            <div class="contact-form-container" id="contact-form-container" style="display: none;">
+                <h3 class="form-title">Registrar Contato</h3>
+                <form id="contact-form">
+                    <input type="hidden" id="lead-id">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="contact-date">Data do Contato</label>
+                                <input type="date" id="contact-date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="contact-type">Tipo de Contato</label>
+                                <select id="contact-type" class="form-control" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="phone">Telefone</option>
+                                    <option value="email">Email</option>
+                                    <option value="whatsapp">WhatsApp</option>
+                                    <option value="meeting">Reunião</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-notes">Observações</label>
+                        <textarea id="contact-notes" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-status">Atualizar Status</label>
+                        <select id="contact-status" class="form-control">
+                            <option value="">Manter status atual</option>
+                            <option value="contato">Em Contato</option>
+                            <option value="qualificado">Qualificado</option>
+                            <option value="proposta">Proposta</option>
+                            <option value="perdido">Perdido</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="next-contact">Próximo Contato</label>
+                        <input type="date" id="next-contact" class="form-control">
+                    </div>
+                    <button type="submit" class="btn-primary">Salvar Contato</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal para qualificar lead -->
+        <div id="qualify-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-modal">&times;</span>
+                <h3 id="modal-title">Qualificar Lead</h3>
+                <form id="qualify-form">
+                    <input type="hidden" id="qualify-lead-id">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="qualify-income">Renda Mensal (R$)</label>
+                                <input type="number" id="qualify-income" class="form-control" min="0" step="100" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="qualify-loan-type">Tipo de Empréstimo</label>
+                                <select id="qualify-loan-type" class="form-control" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="personal">Empréstimo Pessoal</option>
+                                    <option value="vehicle">Financiamento de Veículo</option>
+                                    <option value="home">Financiamento Imobiliário</option>
+                                    <option value="business">Empréstimo para Negócios</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="qualify-loan-amount">Valor Solicitado (R$)</label>
+                                <input type="number" id="qualify-loan-amount" class="form-control" min="1000" step="100" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="qualify-loan-term">Prazo Desejado (meses)</label>
+                                <select id="qualify-loan-term" class="form-control" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="12">12 meses</option>
+                                    <option value="24">24 meses</option>
+                                    <option value="36">36 meses</option>
+                                    <option value="48">48 meses</option>
+                                    <option value="60">60 meses</option>
+                                    <option value="72">72 meses</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qualify-notes">Observações</label>
+                        <textarea id="qualify-notes" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="qualify-status">Status</label>
+                        <select id="qualify-status" class="form-control" required>
+                            <option value="qualificado">Qualificado</option>
+                            <option value="proposta">Pronto para Proposta</option>
+                            <option value="perdido">Não Qualificado</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Salvar Qualificação</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tema
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Configurar botão de alternar tema
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const isDarkMode = document.body.classList.toggle('dark-mode');
+                    localStorage.setItem('darkMode', isDarkMode);
+                });
+            }
+            
+            // Configurar tabs
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover classe ativa de todas as tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Adicionar classe ativa à tab clicada
+                    this.classList.add('active');
+                    
+                    // Esconder todos os conteúdos de tab
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Mostrar conteúdo da tab selecionada
+                    document.getElementById(tabId + '-content').classList.add('active');
+                    
+                    // Esconder formulário de contato
+                    document.getElementById('contact-form-container').style.display = 'none';
+                });
+            });
+            
+            // Configurar botões de contato
+            const contactButtons = document.querySelectorAll('.contact-button');
+            const contactFormContainer = document.getElementById('contact-form-container');
+            const contactForm = document.getElementById('contact-form');
+            
+            contactButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const leadId = this.getAttribute('data-id');
+                    document.getElementById('lead-id').value = leadId;
+                    
+                    // Definir data atual no campo de data
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('contact-date').value = today;
+                    
+                    // Mostrar formulário de contato
+                    contactFormContainer.style.display = 'block';
+                    
+                    // Rolar para o formulário
+                    contactFormContainer.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Enviar formulário de contato
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const contactData = {
+                    leadId: document.getElementById('lead-id').value,
+                    contactDate: document.getElementById('contact-date').value,
+                    contactType: document.getElementById('contact-type').value,
+                    notes: document.getElementById('contact-notes').value,
+                    status: document.getElementById('contact-status').value,
+                    nextContact: document.getElementById('next-contact').value
+                };
+                
+                // Em produção, enviar dados para API
+                // Exemplo: 
+                // fetch('/api/contacts', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(contactData)
+                // })
+                
+                // Simulação para demonstração
+                alert('Contato registrado com sucesso!');
+                contactForm.reset();
+                contactFormContainer.style.display = 'none';
+            });
+            
+            // Configurar modal de qualificação
+            const qualifyButtons = document.querySelectorAll('.qualify-button');
+            const qualifyModal = document.getElementById('qualify-modal');
+            const closeModal = document.getElementById('close-modal');
+            const qualifyForm = document.getElementById('qualify-form');
+            
+            qualifyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const leadId = this.getAttribute('data-id');
+                    document.getElementById('qualify-lead-id').value = leadId;
+                    qualifyModal.style.display = 'block';
+                });
+            });
+            
+            // Fechar modal
+            closeModal.addEventListener('click', function() {
+                qualifyModal.style.display = 'none';
+            });
+            
+            // Fechar modal ao clicar fora
+            window.addEventListener('click', function(event) {
+                if (event.target === qualifyModal) {
+                    qualifyModal.style.display = 'none';
+                }
+            });
+            
+            // Enviar formulário de qualificação
+            qualifyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const qualifyData = {
+                    leadId: document.getElementById('qualify-lead-id').value,
+                    income: document.getElementById('qualify-income').value,
+                    loanType: document.getElementById('qualify-loan-type').value,
+                    loanAmount: document.getElementById('qualify-loan-amount').value,
+                    loanTerm: document.getElementById('qualify-loan-term').value,
+                    notes: document.getElementById('qualify-notes').value,
+                    status: document.getElementById('qualify-status').value
+                };
+                
+                // Em produção, enviar dados para API
+                // Exemplo: 
+                // fetch('/api/leads/qualify', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(qualifyData)
+                // })
+                
+                // Simulação para demonstração
+                alert('Lead qualificado com sucesso!');
+                qualifyForm.reset();
+                qualifyModal.style.display = 'none';
+            });
+            
+            // Configurar busca
+            const searchButton = document.getElementById('search-btn');
+            searchButton.addEventListener('click', function() {
+                const searchTerm = document.getElementById('search-input').value;
+                // Em produção, enviar requisição de busca
+                // Exemplo: window.location.href = '/prospecting?search=' + encodeURIComponent(searchTerm);
+                
+                // Simulação para demonstração
+                alert('Buscando por: ' + searchTerm);
+            });
+            
+            // Configurar paginação
+            const paginationButtons = document.querySelectorAll('.pagination-button:not([id^="prev-page"]):not([id^="next-page"])');
+            
+            paginationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const paginationContainer = this.parentElement;
+                    const buttons = paginationContainer.querySelectorAll('.pagination-button:not([id^="prev-page"]):not([id^="next-page"])');
+                    
+                    // Remover classe ativa de todos os botões
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Adicionar classe ativa ao botão clicado
+                    this.classList.add('active');
+                    
+                    // Em produção, navegar para a página correspondente
+                    // Exemplo: window.location.href = '/prospecting?page=' + this.textContent;
+                    
+                    // Simulação para demonstração
+                    alert('Navegando para página ' + this.textContent);
+                });
+            });
+            
+            // Configurar botões de página anterior e próxima
+            const prevButtons = document.querySelectorAll('[id^="prev-page"]');
+            const nextButtons = document.querySelectorAll('[id^="next-page"]');
+            
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Em produção, navegar para página anterior
+                    // Exemplo: window.location.href = '/prospecting?page=' + (currentPage - 1);
+                    
+                    // Simulação para demonstração
+                    alert('Página anterior');
+                });
+            });
+            
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Em produção, navegar para próxima página
+                    // Exemplo: window.location.href = '/prospecting?page=' + (currentPage + 1);
+                    
+                    // Simulação para demonstração
+                    alert('Próxima página');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

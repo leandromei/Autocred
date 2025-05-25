@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração de Usuários - Autocred</title>
+    <link rel="stylesheet" href="/static/css/modern.css">
+    <style>
+        /* Estilos específicos para administração de usuários */
+        .search-bar {
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .search-bar input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-border);
+            border-right: none;
+            border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+            font-size: 0.875rem;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--color-primary-light);
+        }
+        
+        .search-bar button {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color var(--transition-fast);
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-bar button:hover {
+            background-color: #1a365d;
+        }
+        
+        .search-bar button svg {
+            margin-right: var(--spacing-xs);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: var(--border-radius-full);
+        }
+        
+        .badge-admin {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--color-primary);
+        }
+        
+        .badge-gerente {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: var(--color-info);
+        }
+        
+        .badge-operador {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+        }
+        
+        .badge-active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+        
+        .badge-inactive {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+        }
+        
+        .pagination-info {
+            text-align: center;
+            margin-top: var(--spacing-md);
+            color: var(--color-text-medium);
+            font-size: 0.875rem;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .pagination-controls .btn {
+            margin: 0 var(--spacing-xs);
+        }
+        
+        /* Responsividade para tabelas */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .d-none-sm {
+                display: none;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+                box-shadow: none;
+            }
+            
+            .search-bar input {
+                border-right: 1px solid var(--color-border);
+                border-radius: var(--border-radius-md);
+                margin-bottom: var(--spacing-xs);
+            }
+            
+            .search-bar button {
+                border-radius: var(--border-radius-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">Autocred</div>
+        <div class="navbar-nav">
+            <a href="/financial_dashboard" class="nav-link">Dashboard</a>
+            <a href="/admin/leads" class="nav-link">Leads</a>
+            <a href="/admin/users" class="nav-link active">Usuários</a>
+        </div>
+        <div>
+            <a href="/logout" class="btn btn-secondary btn-sm">Sair</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Administração de Usuários</h1>
+            <a href="#" class="btn btn-success" id="add-user-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <line x1="19" y1="8" x2="19" y2="14"></line>
+                    <line x1="16" y1="11" x2="22" y2="11"></line>
+                </svg>
+                Adicionar Usuário
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar usuários...">
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Buscar
+                </button>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Perfil</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Administrador</td>
+                            <td>admin@autocred.com.br</td>
+                            <td><span class="badge badge-admin">Admin</span></td>
+                            <td><span class="badge badge-active">Ativo</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>João Silva</td>
+                            <td>joao@autocred.com.br</td>
+                            <td><span class="badge badge-gerente">Gerente</span></td>
+                            <td><span class="badge badge-active">Ativo</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Maria Oliveira</td>
+                            <td>maria@autocred.com.br</td>
+                            <td><span class="badge badge-operador">Operador</span></td>
+                            <td><span class="badge badge-inactive">Inativo</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="#" class="btn btn-success btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 11 12 14 22 4"></polyline>
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-info">
+                <span>Mostrando 1-3 de 3 usuários</span>
+                <div class="pagination-controls">
+                    <a href="#" class="btn btn-secondary btn-sm">Anterior</a>
+                    <a href="#" class="btn btn-secondary btn-sm">Próximo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

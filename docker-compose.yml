@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Serviço principal da aplicação
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./autocred.db}
+      - SECRET_KEY=${SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
+      - LOG_FILE=${LOG_FILE:-}
+    volumes:
+      - app_data:/app/data
+    depends_on:
+      - db
+    networks:
+      - autocred_network
+
+  # Banco de dados PostgreSQL (opcional, pode ser substituído por serviço gerenciado)
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-autocred}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - autocred_network
+
+volumes:
+  app_data:
+  postgres_data:
+
+networks:
+  autocred_network:
+    driver: bridge

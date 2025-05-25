@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocred - Comissões</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Estilos específicos para a página de comissões */
+        .commissions-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark-mode .commissions-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark-mode .card {
+            background-color: #2c2c2c;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .dark-mode .card-title {
+            color: #aaa;
+        }
+        
+        .card-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .card-value {
+            color: #fff;
+        }
+        
+        .card-footer {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .dark-mode .card-footer {
+            color: #777;
+        }
+        
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .filter-label {
+            color: #e0e0e0;
+        }
+        
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .dark-mode .filter-select, .dark-mode .filter-input {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .filter-select:focus, .filter-input:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+        
+        .filter-button {
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 24px;
+        }
+        
+        .filter-button:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .filter-button {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .filter-button:hover {
+            background-color: #0d47a1;
+        }
+        
+        .tabs-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .dark-mode .tabs {
+            border-bottom-color: #444;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .dark-mode .tab {
+            color: #aaa;
+        }
+        
+        .tab:hover {
+            color: #2196F3;
+        }
+        
+        .tab.active {
+            color: #2196F3;
+            border-bottom-color: #2196F3;
+        }
+        
+        .dark-mode .tab:hover {
+            color: #64b5f6;
+        }
+        
+        .dark-mode .tab.active {
+            color: #64b5f6;
+            border-bottom-color: #64b5f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .commissions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .commissions-table th, .commissions-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .dark-mode .commissions-table th, .dark-mode .commissions-table td {
+            border-bottom: 1px solid #444;
+        }
+        
+        .commissions-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .commissions-table th {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .commissions-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .dark-mode .commissions-table tr:hover {
+            background-color: #2c2c2c;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pendente {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .dark-mode .status-pendente {
+            background-color: #ff6f00;
+            color: #fff8e1;
+        }
+        
+        .status-pago {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .dark-mode .status-pago {
+            background-color: #1b5e20;
+            color: #e8f5e9;
+        }
+        
+        .status-cancelado {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .dark-mode .status-cancelado {
+            background-color: #b71c1c;
+            color: #ffebee;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .view-button {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .view-button:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .view-button {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .view-button:hover {
+            background-color: #0d47a1;
+        }
+        
+        .receipt-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .receipt-button:hover {
+            background-color: #45a049;
+        }
+        
+        .dark-mode .receipt-button {
+            background-color: #2e7d32;
+        }
+        
+        .dark-mode .receipt-button:hover {
+            background-color: #1b5e20;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination-button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .pagination-button:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pagination-button.active {
+            background-color: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        .dark-mode .pagination-button {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .dark-mode .pagination-button:hover {
+            background-color: #444;
+        }
+        
+        .dark-mode .pagination-button.active {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+        
+        /* Gráficos */
+        .chart-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark-mode .chart-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .dark-mode .chart-title {
+            color: #e0e0e0;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Modal para visualizar detalhes */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-button:hover {
+            color: #555;
+        }
+        
+        .dark-mode .close-button {
+            color: #ccc;
+        }
+        
+        .dark-mode .close-button:hover {
+            color: #fff;
+        }
+        
+        .commission-details {
+            margin-top: 20px;
+        }
+        
+        .commission-section {
+            margin-bottom: 20px;
+        }
+        
+        .commission-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .dark-mode .commission-section-title {
+            color: #e0e0e0;
+            border-bottom-color: #444;
+        }
+        
+        .commission-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .commission-info-item {
+            margin-bottom: 10px;
+        }
+        
+        .commission-info-label {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .dark-mode .commission-info-label {
+            color: #aaa;
+        }
+        
+        .commission-info-value {
+            color: #333;
+        }
+        
+        .dark-mode .commission-info-value {
+            color: #e0e0e0;
+        }
+        
+        .commission-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .commission-action-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .print-button {
+            background-color: #9e9e9e;
+            color: white;
+        }
+        
+        .print-button:hover {
+            background-color: #757575;
+        }
+        
+        .dark-mode .print-button {
+            background-color: #616161;
+        }
+        
+        .dark-mode .print-button:hover {
+            background-color: #424242;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .filter-item {
+                width: 100%;
+            }
+            
+            .filter-button {
+                margin-top: 10px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+            
+            .commissions-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+            
+            .commission-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Autocred - Sistema de Gestão de Leads</h1>
+        <div class="user-info">
+            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
+            <span class="user-name">Olá, {{ user.full_name }}</span>
+            <a href="/logout" class="logout-btn">Sair</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="page-title">Comissões</h2>
+        
+        <div class="commissions-container">
+            <div class="summary-cards">
+                <div class="card">
+                    <div class="card-title">Comissões do Mês</div>
+                    <div class="card-value">R$ {{ monthly_commissions|default('8.750,00') }}</div>
+                    <div class="card-footer">{{ current_month|default('Maio') }}/{{ current_year|default('2025') }}</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Comissões Pendentes</div>
+                    <div class="card-value">R$ {{ pending_commissions|default('3.250,00') }}</div>
+                    <div class="card-footer">{{ pending_count|default('5') }} contratos</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Comissões Pagas</div>
+                    <div class="card-value">R$ {{ paid_commissions|default('5.500,00') }}</div>
+                    <div class="card-footer">{{ paid_count|default('8') }} contratos</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Média por Contrato</div>
+                    <div class="card-value">R$ {{ average_commission|default('673,08') }}</div>
+                    <div class="card-footer">Total: {{ total_count|default('13') }} contratos</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">Evolução de Comissões</h3>
+                <div class="chart-wrapper">
+                    <canvas id="commissionsEvolutionChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="filters-container">
+                <div class="filter-item">
+                    <label class="filter-label" for="filter-status">Status</label>
+                    <select class="filter-select" id="filter-status">
+                        <option value="">Todos</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="pago">Pago</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label" for="filter-month">Mês</label>
+                    <select class="filter-select" id="filter-month">
+                        <option value="">Todos</option>
+                        <option value="1">Janeiro</option>
+                        <option value="2">Fevereiro</option>
+                        <option value="3">Março</option>
+                        <option value="4">Abril</option>
+                        <option value="5" selected>Maio</option>
+                        <option value="6">Junho</option>
+                        <option value="7">Julho</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label" for="filter-year">Ano</label>
+                    <select class="filter-select" id="filter-year">
+                        <option value="2025" selected>2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label" for="filter-client">Cliente</label>
+                    <input type="text" class="filter-input" id="filter-client" placeholder="Nome do cliente">
+                </div>
+                <div class="filter-item">
+                    <button class="filter-button" id="apply-filters">Aplicar Filtros</button>
+                </div>
+            </div>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="all">Todas</div>
+                    <div class="tab" data-tab="pending">Pendentes</div>
+                    <div class="tab" data-tab="paid">Pagas</div>
+                </div>
+                
+                <!-- Tab: Todas -->
+                <div class="tab-content active" id="all-content">
+                    <div class="table-responsive">
+                        <table class="commissions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Contrato</th>
+                                    <th>Cliente</th>
+                                    <th>Valor Contrato</th>
+                                    <th>Comissão</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for commission in commissions %}
+                                <tr>
+                                    <td>{{ commission.id }}</td>
+                                    <td>{{ commission.contract_number }}</td>
+                                    <td>{{ commission.client_name }}</td>
+                                    <td>{{ commission.contract_amount }}</td>
+                                    <td>{{ commission.commission_amount }}</td>
+                                    <td>{{ commission.created_at }}</td>
+                                    <td><span class="status-badge status-{{ commission.status }}">{{ commission.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button view-button" data-id="{{ commission.id }}">Ver</button>
+                                            <button class="action-button receipt-button" data-id="{{ commission.id }}">Recibo</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not commissions %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center;">Nenhuma comissão encontrada.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-all">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-all">Próximo</button>
+                    </div>
+                </div>
+                
+                <!-- Tab: Pendentes -->
+                <div class="tab-content" id="pending-content">
+                    <div class="table-responsive">
+                        <table class="commissions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Contrato</th>
+                                    <th>Cliente</th>
+                                    <th>Valor Contrato</th>
+                                    <th>Comissão</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for commission in pending_commissions_list %}
+                                <tr>
+                                    <td>{{ commission.id }}</td>
+                                    <td>{{ commission.contract_number }}</td>
+                                    <td>{{ commission.client_name }}</td>
+                                    <td>{{ commission.contract_amount }}</td>
+                                    <td>{{ commission.commission_amount }}</td>
+                                    <td>{{ commission.created_at }}</td>
+                                    <td><span class="status-badge status-{{ commission.status }}">{{ commission.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button view-button" data-id="{{ commission.id }}">Ver</button>
+                                            <button class="action-button receipt-button" data-id="{{ commission.id }}">Recibo</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not pending_commissions_list %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center;">Nenhuma comissão pendente encontrada.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-pending">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-pending">Próximo</button>
+                    </div>
+                </div>
+                
+                <!-- Tab: Pagas -->
+                <div class="tab-content" id="paid-content">
+                    <div class="table-responsive">
+                        <table class="commissions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Contrato</th>
+                                    <th>Cliente</th>
+                                    <th>Valor Contrato</th>
+                                    <th>Comissão</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for commission in paid_commissions_list %}
+                                <tr>
+                                    <td>{{ commission.id }}</td>
+                                    <td>{{ commission.contract_number }}</td>
+                                    <td>{{ commission.client_name }}</td>
+                                    <td>{{ commission.contract_amount }}</td>
+                                    <td>{{ commission.commission_amount }}</td>
+                                    <td>{{ commission.created_at }}</td>
+                                    <td><span class="status-badge status-{{ commission.status }}">{{ commission.status }}</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-button view-button" data-id="{{ commission.id }}">Ver</button>
+                                            <button class="action-button receipt-button" data-id="{{ commission.id }}">Recibo</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not paid_commissions_list %}
+                                <tr>
+                                    <td colspan="8" style="text-align: center;">Nenhuma comissão paga encontrada.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <button class="pagination-button" id="prev-page-paid">Anterior</button>
+                        <button class="pagination-button active">1</button>
+                        <button class="pagination-button">2</button>
+                        <button class="pagination-button">3</button>
+                        <button class="pagination-button" id="next-page-paid">Próximo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal para visualizar comissão -->
+        <div id="commission-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-modal">&times;</span>
+                <h3 id="modal-title">Detalhes da Comissão</h3>
+                
+                <div class="commission-details" id="commission-details">
+                    <!-- Conteúdo será preenchido via JavaScript -->
+                </div>
+                
+                <div class="commission-actions" id="commission-actions">
+                    <!-- Botões de ação serão adicionados via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/lib/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tema
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Configurar botão de alternar tema
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const isDarkMode = document.body.classList.toggle('dark-mode');
+                    localStorage.setItem('darkMode', isDarkMode);
+                    
+                    // Atualizar tema dos gráficos
+                    updateChartsTheme(isDarkMode);
+                });
+            }
+            
+            // Inicializar gráficos
+            initializeCharts();
+            
+            // Configurar tabs
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover classe ativa de todas as tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Adicionar classe ativa à tab clicada
+                    this.classList.add('active');
+                    
+                    // Esconder todos os conteúdos de tab
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Mostrar conteúdo da tab selecionada
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // Configurar modal
+            const modal = document.getElementById('commission-modal');
+            const closeButton = document.getElementById('close-modal');
+            const viewButtons = document.querySelectorAll('.view-button');
+            const receiptButtons = document.querySelectorAll('.receipt-button');
+            
+            // Fechar modal
+            closeButton.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Fechar modal ao clicar fora
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Configurar botões de visualizar
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const commissionId = this.getAttribute('data-id');
+                    
+                    // Em produção, buscar dados da comissão via API
+                    // Exemplo: fetch('/api/commissions/' + commissionId)
+                    
+                    // Simulação para demonstração
+                    const commissionDetails = {
+                        id: commissionId,
+                        contract_number: 'CONT-' + ('000000' + commissionId).slice(-6),
+                        client_name: 'Cliente Exemplo ' + commissionId,
+                        client_cpf: '123.456.789-00',
+                        contract_amount: 'R$ 15.000,00',
+                        commission_amount: 'R$ 750,00',
+                        commission_rate: '5%',
+                        created_at: '25/05/2025',
+                        payment_date: commissionId % 2 === 0 ? '10/06/2025' : null,
+                        status: commissionId % 2 === 0 ? 'pago' : 'pendente',
+                        bank_info: 'Banco Exemplo, Ag: 1234, CC: 12345-6',
+                        notes: 'Comissão referente ao contrato de empréstimo pessoal.'
+                    };
+                    
+                    displayCommissionDetails(commissionDetails);
+                    modal.style.display = 'block';
+                });
+            });
+            
+            // Configurar botões de recibo
+            receiptButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const commissionId = this.getAttribute('data-id');
+                    // Em produção, gerar e baixar recibo
+                    // Exemplo: window.location.href = '/api/commissions/' + commissionId + '/receipt';
+                    
+                    // Simulação para demonstração
+                    alert('Gerando recibo para comissão ' + commissionId);
+                });
+            });
+            
+            // Exibir detalhes da comissão
+            function displayCommissionDetails(commission) {
+                const detailsContainer = document.getElementById('commission-details');
+                const actionsContainer = document.getElementById('commission-actions');
+                
+                // Preencher detalhes
+                detailsContainer.innerHTML = `
+                    <div class="commission-section">
+                        <div class="commission-section-title">Informações da Comissão</div>
+                        <div class="commission-info-grid">
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">ID</span>
+                                <span class="commission-info-value">${commission.id}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Status</span>
+                                <span class="commission-info-value">
+                                    <span class="status-badge status-${commission.status}">${commission.status.charAt(0).toUpperCase() + commission.status.slice(1)}</span>
+                                </span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Data de Criação</span>
+                                <span class="commission-info-value">${commission.created_at}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Data de Pagamento</span>
+                                <span class="commission-info-value">${commission.payment_date || 'Pendente'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="commission-section">
+                        <div class="commission-section-title">Informações do Contrato</div>
+                        <div class="commission-info-grid">
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Número do Contrato</span>
+                                <span class="commission-info-value">${commission.contract_number}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Cliente</span>
+                                <span class="commission-info-value">${commission.client_name}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">CPF</span>
+                                <span class="commission-info-value">${commission.client_cpf}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Valor do Contrato</span>
+                                <span class="commission-info-value">${commission.contract_amount}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="commission-section">
+                        <div class="commission-section-title">Detalhes da Comissão</div>
+                        <div class="commission-info-grid">
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Valor da Comissão</span>
+                                <span class="commission-info-value">${commission.commission_amount}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Taxa de Comissão</span>
+                                <span class="commission-info-value">${commission.commission_rate}</span>
+                            </div>
+                            <div class="commission-info-item">
+                                <span class="commission-info-label">Dados Bancários</span>
+                                <span class="commission-info-value">${commission.bank_info}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="commission-section">
+                        <div class="commission-section-title">Observações</div>
+                        <p>${commission.notes}</p>
+                    </div>
+                `;
+                
+                // Adicionar botões de ação
+                actionsContainer.innerHTML = '';
+                
+                const receiptButton = document.createElement('button');
+                receiptButton.className = 'commission-action-button receipt-button';
+                receiptButton.textContent = 'Gerar Recibo';
+                receiptButton.addEventListener('click', function() {
+                    // Em produção, gerar e baixar recibo
+                    // Exemplo: window.location.href = '/api/commissions/' + commission.id + '/receipt';
+                    
+                    // Simulação para demonstração
+                    alert('Gerando recibo para comissão ' + commission.id);
+                });
+                actionsContainer.appendChild(receiptButton);
+                
+                const printButton = document.createElement('button');
+                printButton.className = 'commission-action-button print-button';
+                printButton.textContent = 'Imprimir';
+                printButton.addEventListener('click', function() {
+                    window.print();
+                });
+                actionsContainer.appendChild(printButton);
+            }
+            
+            // Inicializar gráficos
+            function initializeCharts() {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const textColor = isDarkMode ? '#e0e0e0' : '#666';
+                const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                
+                // Dados para o gráfico (em produção, viriam do backend)
+                const commissionsData = {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [{
+                        label: 'Comissões (R$)',
+                        data: [5200, 6100, 4800, 7300, 8750, 0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: '#2196F3'
+                    }]
+                };
+                
+                // Gráfico de Evolução de Comissões
+                const commissionsChart = document.getElementById('commissionsEvolutionChart');
+                if (commissionsChart) {
+                    const ctx = commissionsChart.getContext('2d');
+                    window.commissionsChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: commissionsData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: textColor
+                                    },
+                                    grid: {
+                                        color: gridColor
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: textColor,
+                                        callback: function(value) {
+                                            return 'R$ ' + value.toLocaleString('pt-BR');
+                                        }
+                                    },
+                                    grid: {
+                                        color: gridColor
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Atualizar tema dos gráficos
+            function updateChartsTheme(isDarkMode) {
+                const textColor = isDarkMode ? '#e0e0e0' : '#666';
+                const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                
+                if (window.commissionsChartInstance) {
+                    window.commissionsChartInstance.options.scales.x.ticks.color = textColor;
+                    window.commissionsChartInstance.options.scales.y.ticks.color = textColor;
+                    window.commissionsChartInstance.options.scales.x.grid.color = gridColor;
+                    window.commissionsChartInstance.options.scales.y.grid.color = gridColor;
+                    window.commissionsChartInstance.update();
+                }
+            }
+            
+            // Configurar filtros
+            const applyFiltersButton = document.getElementById('apply-filters');
+            applyFiltersButton.addEventListener('click', function() {
+                const status = document.getElementById('filter-status').value;
+                const month = document.getElementById('filter-month').value;
+                const year = document.getElementById('filter-year').value;
+                const client = document.getElementById('filter-client').value;
+                
+                // Em produção, enviar requisição de filtro
+                // Exemplo: window.location.href = '/commissions?status=' + status + '&month=' + month + '&year=' + year + '&client=' + client;
+                
+                // Simulação para demonstração
+                alert('Filtros aplicados: Status=' + status + ', Mês=' + month + ', Ano=' + year + ', Cliente=' + client);
+            });
+            
+            // Configurar paginação
+            const paginationContainers = document.querySelectorAll('.pagination');
+            
+            paginationContainers.forEach(container => {
+                const prevButton = container.querySelector('[id^="prev-page"]');
+                const nextButton = container.querySelector('[id^="next-page"]');
+                const pageButtons = container.querySelectorAll('.pagination-button:not([id^="prev-page"]):not([id^="next-page"])');
+                
+                pageButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remover classe ativa de todos os botões
+                        pageButtons.forEach(btn => btn.classList.remove('active'));
+                        // Adicionar classe ativa ao botão clicado
+                        this.classList.add('active');
+                        
+                        // Em produção, navegar para a página correspondente
+                        // Exemplo: window.location.href = '/commissions?page=' + this.textContent;
+                        
+                        // Simulação para demonstração
+                        alert('Navegando para página ' + this.textContent);
+                    });
+                });
+                
+                if (prevButton) {
+                    prevButton.addEventListener('click', function() {
+                        // Em produção, navegar para página anterior
+                        // Exemplo: window.location.href = '/commissions?page=' + (currentPage - 1);
+                        
+                        // Simulação para demonstração
+                        alert('Página anterior');
+                    });
+                }
+                
+                if (nextButton) {
+                    nextButton.addEventListener('click', function() {
+                        // Em produção, navegar para próxima página
+                        // Exemplo: window.location.href = '/commissions?page=' + (currentPage + 1);
+                        
+                        // Simulação para demonstração
+                        alert('Próxima página');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

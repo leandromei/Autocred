@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocred - Base de Contatos</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Estilos específicos para a página de contatos */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        
+        .dark-mode .search-input {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .search-input:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+        
+        .search-button {
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .search-button {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .search-button:hover {
+            background-color: #0d47a1;
+        }
+        
+        .contacts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .contacts-table th, .contacts-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .dark-mode .contacts-table th, .dark-mode .contacts-table td {
+            border-bottom: 1px solid #444;
+        }
+        
+        .contacts-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dark-mode .contacts-table th {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .contacts-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .dark-mode .contacts-table tr:hover {
+            background-color: #2c2c2c;
+        }
+        
+        .contacts-table .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-novo {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .dark-mode .status-novo {
+            background-color: #0d47a1;
+            color: #e3f2fd;
+        }
+        
+        .status-contato {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .dark-mode .status-contato {
+            background-color: #1b5e20;
+            color: #e8f5e9;
+        }
+        
+        .status-qualificado {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .dark-mode .status-qualificado {
+            background-color: #ff6f00;
+            color: #fff8e1;
+        }
+        
+        .status-proposta {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .dark-mode .status-proposta {
+            background-color: #4a148c;
+            color: #f3e5f5;
+        }
+        
+        .status-fechado {
+            background-color: #e0f2f1;
+            color: #00695c;
+        }
+        
+        .dark-mode .status-fechado {
+            background-color: #004d40;
+            color: #e0f2f1;
+        }
+        
+        .status-perdido {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .dark-mode .status-perdido {
+            background-color: #b71c1c;
+            color: #ffebee;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .edit-button {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .edit-button:hover {
+            background-color: #0b7dda;
+        }
+        
+        .dark-mode .edit-button {
+            background-color: #1565c0;
+        }
+        
+        .dark-mode .edit-button:hover {
+            background-color: #0d47a1;
+        }
+        
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .dark-mode .delete-button {
+            background-color: #c62828;
+        }
+        
+        .dark-mode .delete-button:hover {
+            background-color: #b71c1c;
+        }
+        
+        .add-contact-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .add-contact-button:hover {
+            background-color: #45a049;
+        }
+        
+        .dark-mode .add-contact-button {
+            background-color: #2e7d32;
+        }
+        
+        .dark-mode .add-contact-button:hover {
+            background-color: #1b5e20;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination-button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .pagination-button:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pagination-button.active {
+            background-color: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+        
+        .dark-mode .pagination-button {
+            background-color: #333;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .dark-mode .pagination-button:hover {
+            background-color: #444;
+        }
+        
+        .dark-mode .pagination-button.active {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+        
+        /* Modal para adicionar/editar contato */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-button:hover {
+            color: #555;
+        }
+        
+        .dark-mode .close-button {
+            color: #ccc;
+        }
+        
+        .dark-mode .close-button:hover {
+            color: #fff;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #444;
+            border-color: #555;
+            color: #fff;
+        }
+        
+        .form-control:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+        
+        .form-submit {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .form-submit:hover {
+            background-color: #45a049;
+        }
+        
+        .dark-mode .form-submit {
+            background-color: #2e7d32;
+        }
+        
+        .dark-mode .form-submit:hover {
+            background-color: #1b5e20;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .contacts-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Autocred - Sistema de Gestão de Leads</h1>
+        <div class="user-info">
+            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
+            <span class="user-name">Olá, {{ user.full_name }}</span>
+            <a href="/logout" class="logout-btn">Sair</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="page-title">Base de Contatos</h2>
+        
+        <button class="add-contact-button" id="add-contact-btn">Adicionar Novo Contato</button>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar por nome, email ou telefone...">
+            <button class="search-button" id="search-btn">Buscar</button>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="contacts-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Status</th>
+                        <th>Origem</th>
+                        <th>Data de Cadastro</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts %}
+                    <tr>
+                        <td>{{ contact.name }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.phone }}</td>
+                        <td><span class="status-badge status-{{ contact.status }}">{{ contact.status }}</span></td>
+                        <td>{{ contact.source }}</td>
+                        <td>{{ contact.created_at }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-button edit-button" data-id="{{ contact.id }}">Editar</button>
+                                <button class="action-button delete-button" data-id="{{ contact.id }}">Excluir</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% if not contacts %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Nenhum contato encontrado.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination">
+            <button class="pagination-button" id="prev-page">Anterior</button>
+            <button class="pagination-button active">1</button>
+            <button class="pagination-button">2</button>
+            <button class="pagination-button">3</button>
+            <button class="pagination-button" id="next-page">Próximo</button>
+        </div>
+        
+        <!-- Modal para adicionar/editar contato -->
+        <div id="contact-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-modal">&times;</span>
+                <h3 id="modal-title">Adicionar Novo Contato</h3>
+                <form id="contact-form">
+                    <input type="hidden" id="contact-id">
+                    <div class="form-group">
+                        <label for="contact-name">Nome</label>
+                        <input type="text" id="contact-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email</label>
+                        <input type="email" id="contact-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">Telefone</label>
+                        <input type="tel" id="contact-phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-status">Status</label>
+                        <select id="contact-status" class="form-control" required>
+                            <option value="novo">Novo</option>
+                            <option value="contato">Contato</option>
+                            <option value="qualificado">Qualificado</option>
+                            <option value="proposta">Proposta</option>
+                            <option value="fechado">Fechado</option>
+                            <option value="perdido">Perdido</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-source">Origem</label>
+                        <select id="contact-source" class="form-control" required>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Google">Google</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Indicação">Indicação</option>
+                            <option value="Site">Site</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="form-submit">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Inicializar tema
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar preferência de tema
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Configurar botão de alternar tema
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const isDarkMode = document.body.classList.toggle('dark-mode');
+                    localStorage.setItem('darkMode', isDarkMode);
+                });
+            }
+            
+            // Configurar modal
+            const modal = document.getElementById('contact-modal');
+            const addButton = document.getElementById('add-contact-btn');
+            const closeButton = document.getElementById('close-modal');
+            const editButtons = document.querySelectorAll('.edit-button');
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            const contactForm = document.getElementById('contact-form');
+            
+            // Abrir modal para adicionar
+            addButton.addEventListener('click', function() {
+                document.getElementById('modal-title').textContent = 'Adicionar Novo Contato';
+                document.getElementById('contact-id').value = '';
+                document.getElementById('contact-form').reset();
+                modal.style.display = 'block';
+            });
+            
+            // Fechar modal
+            closeButton.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Fechar modal ao clicar fora
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Configurar botões de editar
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const contactId = this.getAttribute('data-id');
+                    document.getElementById('modal-title').textContent = 'Editar Contato';
+                    document.getElementById('contact-id').value = contactId;
+                    
+                    // Em produção, buscar dados do contato via API
+                    // Exemplo: fetch('/api/contacts/' + contactId)
+                    
+                    // Simulação para demonstração
+                    document.getElementById('contact-name').value = 'Nome do Contato ' + contactId;
+                    document.getElementById('contact-email').value = 'contato' + contactId + '@exemplo.com';
+                    document.getElementById('contact-phone').value = '(11) 9' + contactId + '123-4567';
+                    document.getElementById('contact-status').value = 'novo';
+                    document.getElementById('contact-source').value = 'Facebook';
+                    
+                    modal.style.display = 'block';
+                });
+            });
+            
+            // Configurar botões de excluir
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const contactId = this.getAttribute('data-id');
+                    if (confirm('Tem certeza que deseja excluir este contato?')) {
+                        // Em produção, enviar requisição para excluir via API
+                        // Exemplo: fetch('/api/contacts/' + contactId, { method: 'DELETE' })
+                        
+                        // Simulação para demonstração
+                        alert('Contato ' + contactId + ' excluído com sucesso!');
+                        // Recarregar a página ou atualizar a tabela
+                    }
+                });
+            });
+            
+            // Enviar formulário
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const contactId = document.getElementById('contact-id').value;
+                const isNewContact = !contactId;
+                
+                // Coletar dados do formulário
+                const contactData = {
+                    name: document.getElementById('contact-name').value,
+                    email: document.getElementById('contact-email').value,
+                    phone: document.getElementById('contact-phone').value,
+                    status: document.getElementById('contact-status').value,
+                    source: document.getElementById('contact-source').value
+                };
+                
+                // Em produção, enviar dados para API
+                // Exemplo: 
+                // const method = isNewContact ? 'POST' : 'PUT';
+                // const url = isNewContact ? '/api/contacts' : '/api/contacts/' + contactId;
+                // fetch(url, {
+                //     method: method,
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(contactData)
+                // })
+                
+                // Simulação para demonstração
+                alert((isNewContact ? 'Contato adicionado' : 'Contato atualizado') + ' com sucesso!');
+                modal.style.display = 'none';
+                // Recarregar a página ou atualizar a tabela
+            });
+            
+            // Configurar busca
+            const searchButton = document.getElementById('search-btn');
+            searchButton.addEventListener('click', function() {
+                const searchTerm = document.getElementById('search-input').value;
+                // Em produção, enviar requisição de busca
+                // Exemplo: window.location.href = '/contacts?search=' + encodeURIComponent(searchTerm);
+                
+                // Simulação para demonstração
+                alert('Buscando por: ' + searchTerm);
+            });
+            
+            // Configurar paginação
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+            
+            prevButton.addEventListener('click', function() {
+                // Em produção, navegar para página anterior
+                // Exemplo: window.location.href = '/contacts?page=' + (currentPage - 1);
+                
+                // Simulação para demonstração
+                alert('Página anterior');
+            });
+            
+            nextButton.addEventListener('click', function() {
+                // Em produção, navegar para próxima página
+                // Exemplo: window.location.href = '/contacts?page=' + (currentPage + 1);
+                
+                // Simulação para demonstração
+                alert('Próxima página');
+            });
+        });
+    </script>
+</body>
+</html>
